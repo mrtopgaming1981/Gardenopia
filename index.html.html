@@ -1,0 +1,1781 @@
+<html>
+<head>
+<title>
+Gardenopia
+</title>
+</head>
+<body>
+<button id="resetGame">Reset Save</button>
+<div id="topBar">
+<div id="grassPatch"></div>
+<div id="inventory">
+<div id="ordersShop">
+
+    <h3>Orders</h3>
+
+    <div id="ordersList">
+
+        <p>No orders available.</p>
+
+    </div>
+
+</div>
+
+    <h3>Inventory</h3>
+
+<div class="invItem">
+    <span id="daisyInv">Daisy Seeds: 0</span>
+    <button id="daisyPlant">Plant</button>
+</div>
+
+<div class="invItem">
+    <span id="tulipInv">Tulip Seeds: 0</span>
+    <button id="tulipPlant">Plant</button>
+</div>
+
+<div class="invItem">
+    <span id="sunflowerInv">Sunflower Seeds: 0</span>
+    <button id="sunflowerPlant">Plant</button>
+</div>
+
+    <hr>
+
+    <div class="invItem">
+        <span id="potInv">Pots: 0</span>
+        <button id="potUse">Use</button>
+    </div>
+
+    <div class="invItem">
+        <span id="soilInv">Soil: 0</span>
+<button id="soilUse">Use</button>
+    </div>
+
+    <div class="invItem">
+        <span id="waterInv">Water: 0</span>
+<button id="waterUse">Use</button>
+    </div>
+
+
+</div>
+	<div id="flowerInventory">
+
+    <h3>Flowers</h3>
+
+    <p id="daisyFlowerInv">Daisies: 0</p>
+    <p id="tulipFlowerInv">Tulips: 0</p>
+    <p id="sunflowerFlowerInv">Sunflowers: 0</p>
+
+</div>
+    <div id="moneyDisplay"></div>
+
+<button id="ordersButton">Orders</button>
+<button id="miscButton">Misc</button>
+<button id="seedButton">Seeds</button>
+
+<div id="seedShop">
+
+    <h3>Seed Shop</h3>
+
+    <div id="seedList"></div>
+
+</div>
+<div id="miscShop">
+
+    <h3>Misc Shop</h3>
+
+    <div id="miscList"></div>
+
+</div>
+</div>
+<div id="upgradeTable">
+
+    <h3>Upgrades</h3>
+
+    <div id="upgradeList"></div>
+
+</div>
+
+<img id="cursorSprite" src="sprites/pot.png">
+</body>
+<style>
+#resetGame{
+    position:absolute;
+    top:960px;
+    left:250px;
+
+    padding:10px 20px;
+
+    background:#c0392b;
+    color:white;
+
+    border:none;
+    border-radius:8px;
+
+    cursor:pointer;
+}
+
+#resetGame:hover{
+    background:#a93226;
+}
+#upgradeTable{
+
+    position:absolute;
+
+    top:740px;
+    left:250px;
+
+    width:650px;
+    height:210px;
+
+    background:#f3e3b5;
+    border:4px solid #8b5a2b;
+    border-radius:12px;
+
+    padding:10px;
+
+    box-sizing:border-box;
+}
+#upgradeList{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:25px;
+
+}
+
+#upgradeTable h3{
+
+    margin-top:0;
+
+    text-align:center;
+
+}
+
+.upgradeItem{
+
+    width:170px;
+
+    height:105px;
+
+    background:white;
+
+    border-radius:10px;
+
+    border:2px solid #8b5a2b;
+
+    padding:10px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    text-align:center;
+
+}
+
+.upgradeInfo{
+
+    flex:1;
+
+}
+
+.upgradeInfo b{
+
+    display:block;
+
+}
+
+.upgradeItem button{
+
+    padding:6px 14px;
+
+    border:none;
+
+    border-radius:6px;
+
+    background:#4CAF50;
+
+    color:white;
+
+    cursor:pointer;
+
+}
+
+.upgradeItem button:hover{
+
+    background:#3b8d40;
+
+}
+#flowerInventory{
+
+    position:absolute;
+
+    top:510px;
+
+    left:1045px;
+
+    width:220px;
+
+    background:#f3e3b5;
+
+    border:4px solid #8b5a2b;
+
+    border-radius:12px;
+
+    padding:15px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.4);
+
+}
+
+#flowerInventory h3{
+
+    margin-top:0;
+
+    text-align:center;
+
+}
+
+#flowerInventory p{
+
+    margin:8px 0;
+
+    font-weight:bold;
+
+}
+#cursorSprite{
+
+    position:fixed;
+
+    width:64px;
+
+    height:64px;
+
+    pointer-events:none;
+
+    display:none;
+
+    transform:translate(-50%,-50%);
+
+    z-index:9999;
+
+}
+.invItem{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin:8px 0;
+
+}
+
+.invItem span{
+
+    font-weight:bold;
+
+}
+
+.invItem button{
+
+    padding:5px 10px;
+
+    border:none;
+
+    border-radius:6px;
+
+    background:#4CAF50;
+
+    color:white;
+
+    cursor:pointer;
+
+}
+
+.invItem button:hover{
+
+    background:#3b8d40;
+
+}
+/* back ground */
+html, body{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body{
+    background-image: url("sprites/cloudsbg.JFIF");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+/* Wooden top board */
+
+#topBar{
+    position:relative;
+    width:100%;
+    height:90px;
+
+    background-image:url("sprites/wood.JFIF");
+    background-size:cover;
+    background-position:center;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 30px;
+    box-sizing:border-box;
+
+    box-shadow:0 4px 10px rgba(0,0,0,.35);
+}
+
+/* Money */
+
+#moneyDisplay{
+    color:white;
+    font-size:28px;
+    font-weight:bold;
+    text-shadow:2px 2px 4px black;
+}
+
+/* Seeds button */
+
+#seedButton,
+#miscButton,
+#ordersButton{
+
+    right:150px;
+
+}
+
+#miscButton{
+
+    right:75px;
+
+}
+
+#seedButton{
+
+    right:25px;
+
+}
+#miscButton{
+
+    right:300px;
+
+}
+
+#seedButton{
+
+    right:25px;
+
+}
+
+#seedButton:hover,
+#miscButton:hover,
+#ordersButton:hover{
+    background:#45a049;
+}
+
+/* Shop */
+
+#seedShop{
+    position:absolute;
+
+    top:90px;
+    right:20px;
+
+    width:250px;
+
+    background:#f3e3b5;
+
+    border:4px solid #8b5a2b;
+    border-radius:12px;
+
+    padding:15px;
+
+    display:none;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.4);
+}
+
+#seedShop h3{
+    margin-top:0;
+    text-align:center;
+}
+
+.seedItem{
+
+    display:flex;
+    align-items:center;
+
+    gap:10px;
+
+    padding:10px;
+    margin-top:10px;
+
+    background:white;
+
+    border-radius:8px;
+
+}
+
+.seedInfo{
+
+    flex:1;
+
+    font-weight:bold;
+
+}
+
+.seedOwned{
+
+    width:80px;
+
+    text-align:right;
+
+    font-weight:bold;
+
+    color:#555;
+
+}
+
+.seedItem button{
+
+    margin-left:10px;
+
+    padding:6px 12px;
+
+    border:none;
+
+    border-radius:6px;
+
+    background:#4CAF50;
+
+    color:white;
+
+    cursor:pointer;
+
+}
+
+.seedItem button:hover{
+
+    background:#3b8d40;
+
+}
+/* Grass patch */
+
+#grassPatch{
+
+    position:absolute;
+
+    top:170px;
+    left:120px;
+
+    width:900px;
+    height:550px;
+
+    background-image:url("sprites/grass.JFIF");
+    background-repeat:repeat;
+    background-size:128px 128px;
+
+    border:6px solid #2f6b1f;
+    border-radius:20px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.35);
+
+    display:grid;
+
+    grid-template-columns:repeat(5,1fr);
+    grid-template-rows:repeat(4,1fr);
+
+    gap:15px;
+
+    padding:20px;
+
+    box-sizing:border-box;
+
+}
+.gridCell{
+
+    border:2px dashed rgba(255,255,255,.35);
+
+    border-radius:12px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    cursor:pointer;
+
+}
+
+.gridCell:hover{
+
+    background:rgba(255,255,255,.15);
+
+}
+
+.gridCell img{
+
+    width:80px;
+
+    height:80px;
+
+    image-rendering:pixelated;
+
+}
+/* Misc Shop */
+
+#miscShop{
+    position:absolute;
+    top:90px;
+    right:450px;
+    width:250px;
+    background:#f3e3b5;
+    border:4px solid #8b5a2b;
+    border-radius:12px;
+    padding:15px;
+    box-shadow:0 8px 20px rgba(0,0,0,.4);
+	display:none;
+
+}
+#ordersShop{
+    position:absolute;
+    top:-85px;
+    right:430px;
+    width:250px;
+    background:#f3e3b5;
+    border:4px solid #8b5a2b;
+    border-radius:12px;
+    padding:15px;
+    box-shadow:0 8px 20px rgba(0,0,0,.4);
+	display:none;
+
+}
+
+#miscShop h3{
+
+    margin-top:0;
+
+    text-align:center;
+
+}
+
+.miscItem{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    background:white;
+
+    padding:10px;
+
+    margin-top:10px;
+
+    border-radius:8px;
+
+}
+
+.miscItem button{
+
+    padding:6px 12px;
+
+    border:none;
+
+    border-radius:6px;
+
+    background:#4CAF50;
+
+    color:white;
+
+    cursor:pointer;
+
+}
+
+.miscItem button:hover{
+
+    background:#3b8d40;
+
+}
+/* Inventory */
+
+#inventory{
+
+    position:absolute;
+
+    top:170px;
+
+    left:1045px;
+
+    width:220px;
+
+    min-height:300px;
+
+    background:#f3e3b5;
+
+    border:4px solid #8b5a2b;
+
+    border-radius:12px;
+
+    padding:15px;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.4);
+
+}
+
+#inventory h3{
+
+    margin-top:0;
+
+    text-align:center;
+
+}
+
+#inventory p{
+
+    margin:8px 0;
+
+    font-weight:bold;
+
+}
+
+#inventory hr{
+
+    margin:15px 0;
+
+}
+</style>
+<script>
+function loadGame(){
+
+    const save = localStorage.getItem("gardenopiaSave");
+
+    if(!save) return;
+
+    const data = JSON.parse(save);
+
+    money = data.money;
+
+    seeds.forEach((seed,i)=>{
+        seed.owned = data.seeds[i].owned;
+    });
+
+    flowers.forEach((flower,i)=>{
+        flower.owned = data.flowers[i].owned;
+    });
+
+    miscItems.forEach((item,i)=>{
+        item.owned = data.miscItems[i].owned;
+    });
+
+    betterPots = data.betterPots;
+    betterSoil = data.betterSoil;
+    betterWater = data.betterWater;
+
+currentOrder = data.currentOrder;
+
+    moneyDisplay.innerHTML = "Money: $" + money;
+
+    updateInventory();
+
+    document.getElementById("daisyFlowerInv").innerHTML =
+        "Daisies: " + flowers[0].owned;
+
+    document.getElementById("tulipFlowerInv").innerHTML =
+        "Tulips: " + flowers[1].owned;
+
+    document.getElementById("sunflowerFlowerInv").innerHTML =
+        "Sunflowers: " + flowers[2].owned;
+
+    if(data.cells){
+
+        data.cells.forEach((savedCell,index)=>{
+
+            const cell = cells[index];
+
+            cell.innerHTML = "";
+
+            cell.dataset.occupied = savedCell.occupied;
+            cell.dataset.state = savedCell.state;
+            cell.dataset.plant = savedCell.plant;
+
+            if(savedCell.image){
+
+                const img = document.createElement("img");
+
+                img.src = savedCell.image;
+
+                cell.appendChild(img);
+
+            }
+			if(cell.dataset.state=="growing"){
+
+    growPlant(cell);
+
+}
+
+if(cell.dataset.state=="stage2water"){
+
+    finishGrowth(cell);
+
+}
+
+        });
+
+    }
+
+    renderUpgrades();
+    renderOrders();
+
+}
+function saveGame(){
+
+    const cellData = cells.map(cell => ({
+
+        occupied: cell.dataset.occupied || "false",
+        state: cell.dataset.state || "",
+        plant: cell.dataset.plant || "",
+        image: cell.querySelector("img")
+            ? cell.querySelector("img").src
+            : null
+			
+
+    }));
+
+    const saveData = {
+
+        money: money,
+
+        seeds: seeds,
+
+        flowers: flowers,
+
+        miscItems: miscItems,
+
+        betterPots: betterPots,
+        betterSoil: betterSoil,
+        betterWater: betterWater,
+
+currentOrder: currentOrder,
+
+cells: cellData
+
+    };
+
+    localStorage.setItem("gardenopiaSave", JSON.stringify(saveData));
+
+}
+function buyBetterPots(){
+
+    if(money < 250) return;
+
+    money -= 250;
+    betterPots = true;
+
+    moneyDisplay.innerHTML = "Money: $" + money;
+
+    renderUpgrades();
+
+}
+
+function buyBetterSoil(){
+
+    if(money < 300) return;
+
+    money -= 300;
+    betterSoil = true;
+
+    moneyDisplay.innerHTML = "Money: $" + money;
+
+    renderUpgrades();
+
+}
+
+function buyBetterWater(){
+
+    if(money < 400) return;
+
+    money -= 400;
+    betterWater = true;
+
+    moneyDisplay.innerHTML = "Money: $" + money;
+
+    renderUpgrades();
+
+}
+let betterPots = false;
+let betterSoil = false;
+let betterWater = false;
+const upgrades = [
+
+    {
+        name:"Better Pots",
+        desc:"50% Faster Growth",
+        price:100
+    },
+
+    {
+        name:"Better Soil",
+        desc:"+20% Order Value",
+        price:150
+    },
+
+    {
+        name:"Better Water",
+        desc:"Plants Stay Watered",
+        price:200
+    }
+
+];
+function startOrderTimer(){
+
+    if(orderTimer!=null) return;
+
+    if(flowers[0].owned==0 &&
+       flowers[1].owned==0 &&
+       flowers[2].owned==0){
+
+        return;
+
+    }
+
+    const waitTime=(Math.random()*20+20)*1000;
+
+    orderTimer=setTimeout(function(){
+
+        orderTimer=null;
+
+        generateOrder();
+
+    },waitTime);
+
+}
+let currentOrder = null;
+function generateOrder(){
+
+    if(currentOrder!=null) return;
+
+    const available=[];
+
+    if(flowers[0].owned>0) available.push(0);
+    if(flowers[1].owned>0) available.push(1);
+    if(flowers[2].owned>0) available.push(2);
+
+    if(available.length==0){
+		renderOrders();
+        startOrderTimer();
+        return;
+    }
+
+    const flowerIndex=available[Math.floor(Math.random()*available.length)];
+
+    const flower=flowers[flowerIndex];
+
+    const amount=Math.floor(Math.random()*flower.owned)+1;
+
+    let priceEach=33;
+
+    if(flower.name=="Tulip") priceEach=40;
+    if(flower.name=="Sunflower") priceEach=55;
+
+let reward = amount * priceEach;
+
+if(betterSoil){
+
+    reward = Math.floor(reward * 1.20);
+
+}
+
+currentOrder={
+
+    flower:flower.name,
+    index:flowerIndex,
+    amount:amount,
+    reward:reward
+
+};
+
+    renderOrders();
+renderUpgrades();
+
+}
+let orderTimer = null;
+
+const flowerPrices = {
+
+    daisy:33,
+    tulip:40,
+    sunflower:55
+
+};
+let money = 22;
+
+const seeds = [
+
+    {
+        name:"Daisy",
+        price:5,
+        owned:0
+    },
+
+    {
+        name:"Tulip",
+        price:10,
+        owned:0
+    },
+
+    {
+        name:"Sunflower",
+        price:20,
+        owned:0
+    }
+
+];
+const flowers = [
+
+    {
+        name:"Daisy",
+        owned:0
+    },
+
+    {
+        name:"Tulip",
+        owned:0
+    },
+
+    {
+        name:"Sunflower",
+        owned:0
+    }
+
+];
+const miscItems = [
+
+    {
+        name:"Pot",
+        price:10,
+        owned:0
+    },
+
+    {
+        name:"Soil",
+        price:3,
+        owned:0
+    },
+
+    {
+        name:"Water",
+        price:2,
+        owned:0
+    }
+
+];
+
+const moneyDisplay=document.getElementById("moneyDisplay");
+moneyDisplay.innerHTML = "Money: $" + money;
+const ordersButton=document.getElementById("ordersButton");
+const resetGame = document.getElementById("resetGame");
+const ordersShop=document.getElementById("ordersShop");
+const button=document.getElementById("seedButton");
+const shop=document.getElementById("seedShop");
+const miscButton=document.getElementById("miscButton");
+const miscShop=document.getElementById("miscShop");
+const potUse=document.getElementById("potUse");
+const soilUse=document.getElementById("soilUse");
+const waterUse=document.getElementById("waterUse");
+const cursorSprite=document.getElementById("cursorSprite");
+const daisyPlant=document.getElementById("daisyPlant");
+const tulipPlant=document.getElementById("tulipPlant");
+const sunflowerPlant=document.getElementById("sunflowerPlant");
+
+let selectedTool=null;
+resetGame.onclick = function(){
+
+    if(confirm("Are you sure you want to delete your save? This cannot be undone.")){
+
+        localStorage.removeItem("gardenopiaSave");
+
+        location.reload();
+
+    }
+
+};
+button.onclick=function(){
+
+    if(shop.style.display==="block"){
+        shop.style.display="none";
+    }
+    else{
+        shop.style.display="block";
+    }
+
+}
+miscButton.onclick=function(){
+
+    if(miscShop.style.display==="block"){
+        miscShop.style.display="none";
+    }
+    else{
+        miscShop.style.display="block";
+    }
+
+}
+ordersButton.onclick=function(){
+
+    if(ordersShop.style.display=="block"){
+
+        ordersShop.style.display="none";
+
+    }
+    else{
+
+        ordersShop.style.display="block";
+
+    }
+
+}
+potUse.onclick=function(){
+
+    if(miscItems[0].owned<=0){
+
+        alert("You have no pots!");
+
+        return;
+
+    }
+
+    selectedTool="pot";
+
+    cursorSprite.src="sprites/pot.png";
+
+    cursorSprite.style.display="block";
+
+}
+soilUse.onclick=function(){
+
+    if(miscItems[1].owned<=0){
+
+        alert("You have no soil!");
+
+        return;
+
+    }
+
+    selectedTool="soil";
+
+    cursorSprite.src="sprites/soilbag.png";
+
+    cursorSprite.style.display="block";
+
+}
+waterUse.onclick=function(){
+
+    if(miscItems[2].owned<=0){
+
+        alert("You have no water!");
+
+        return;
+
+    }
+
+    selectedTool="water";
+
+    cursorSprite.src="sprites/water.png";
+
+    cursorSprite.style.display="block";
+
+}
+daisyPlant.onclick=function(){
+
+    if(seeds[0].owned<=0){
+
+        alert("You have no Daisy seeds!");
+
+        return;
+
+    }
+
+    selectedTool="daisy";
+
+    cursorSprite.src="sprites/daisyseed.png";
+
+    cursorSprite.style.display="block";
+
+}
+
+tulipPlant.onclick=function(){
+
+    if(seeds[1].owned<=0){
+
+        alert("You have no Tulip seeds!");
+
+        return;
+
+    }
+
+    selectedTool="tulip";
+
+    cursorSprite.src="sprites/tulipseed.png";
+
+    cursorSprite.style.display="block";
+
+}
+
+sunflowerPlant.onclick=function(){
+
+    if(seeds[2].owned<=0){
+
+        alert("You have no Sunflower seeds!");
+
+        return;
+
+    }
+
+    selectedTool="sunflower";
+
+    cursorSprite.src="sprites/sunflowerseed.png";
+
+    cursorSprite.style.display="block";
+
+}
+document.addEventListener("mousemove",function(e){
+
+    if(selectedTool!=null){
+
+        cursorSprite.style.left=e.clientX+"px";
+
+        cursorSprite.style.top=e.clientY+"px";
+
+    }
+
+});
+
+function renderSeedShop(){
+
+    const list=document.getElementById("seedList");
+
+    list.innerHTML="";
+
+    seeds.forEach((seed,index)=>{
+
+        list.innerHTML+=`
+
+        <div class="seedItem">
+
+            <div class="seedInfo">
+                ${seed.name} Seed - $${seed.price}
+            </div>
+
+            
+
+            <button onclick="buySeed(${index})">
+                Buy
+            </button>
+
+        </div>
+
+        `;
+
+    });
+
+}
+
+function buySeed(index){
+
+    const seed = seeds[index];
+
+    if(money >= seed.price){
+
+        money -= seed.price;
+
+        seed.owned++;
+
+        moneyDisplay.innerHTML = "Money: $" + money;
+
+        renderSeedShop();
+
+        updateInventory();
+
+        saveGame();
+
+    }
+
+}
+function buyMisc(index){
+
+    const item=miscItems[index];
+
+    if(money>=item.price){
+
+        money-=item.price;
+
+        item.owned++;
+
+        moneyDisplay.innerHTML="Money: $"+money;
+
+        renderMiscShop();
+		updateInventory();
+		saveGame();
+
+    }
+
+}
+
+renderSeedShop();
+renderMiscShop();
+updateInventory();
+function renderMiscShop(){
+
+    const list=document.getElementById("miscList");
+
+    list.innerHTML="";
+
+    miscItems.forEach((item,index)=>{
+
+        list.innerHTML+=`
+
+        <div class="miscItem">
+
+            <div class="seedInfo">
+                ${item.name} - $${item.price}
+            </div>
+
+            
+
+            <button onclick="buyMisc(${index})">
+                Buy
+            </button>
+
+        </div>
+
+        `;
+
+    });
+
+}
+function updateInventory(){
+
+    document.getElementById("daisyInv").innerHTML =
+    "Daisy Seeds: " + seeds[0].owned;
+
+    document.getElementById("tulipInv").innerHTML =
+    "Tulip Seeds: " + seeds[1].owned;
+
+    document.getElementById("sunflowerInv").innerHTML =
+    "Sunflower Seeds: " + seeds[2].owned;
+
+    document.getElementById("potInv").innerHTML =
+    "Pots: " + miscItems[0].owned;
+
+    document.getElementById("soilInv").innerHTML =
+    "Soil: " + miscItems[1].owned;
+
+    document.getElementById("waterInv").innerHTML =
+    "Water: " + miscItems[2].owned;
+startOrderTimer();
+}
+const grass=document.getElementById("grassPatch");
+
+const cells=[];
+
+for(let i=0;i<20;i++){
+
+    const cell=document.createElement("div");
+
+    cell.className="gridCell";
+
+    cell.dataset.occupied="false";
+
+    grass.appendChild(cell);
+
+    cells.push(cell);
+
+}
+cells.forEach(cell=>{
+
+    cell.onclick=function(){
+	// HARVEST
+if(cell.dataset.state=="ready"){
+
+    if(cell.dataset.plant=="daisy"){
+
+        flowers[0].owned++;
+
+    }
+    else if(cell.dataset.plant=="tulip"){
+
+        flowers[1].owned++;
+
+    }
+    else{
+
+        flowers[2].owned++;
+
+    }
+
+    document.getElementById("daisyFlowerInv").innerHTML =
+    "Daisies: " + flowers[0].owned;
+
+    document.getElementById("tulipFlowerInv").innerHTML =
+    "Tulips: " + flowers[1].owned;
+
+document.getElementById("sunflowerFlowerInv").innerHTML =
+"Sunflowers: " + flowers[2].owned;
+
+startOrderTimer();
+
+cell.querySelector("img").remove();
+
+cell.dataset.state = "";
+cell.dataset.plant = "";
+cell.dataset.occupied = "false";
+
+saveGame();
+
+return;
+
+}
+
+        // PLACE POT
+        if(selectedTool=="pot"){
+
+            if(cell.dataset.occupied=="true") return;
+
+            if(miscItems[0].owned<=0) return;
+
+            const img=document.createElement("img");
+
+            img.src="sprites/pot.png";
+
+            cell.appendChild(img);
+
+            cell.dataset.occupied="true";
+            cell.dataset.state="pot";
+
+            miscItems[0].owned--;
+
+            updateInventory();
+			saveGame();
+
+            if(miscItems[0].owned==0){
+
+                selectedTool=null;
+                cursorSprite.style.display="none";
+
+            }
+
+            return;
+        }
+
+        // ADD SOIL
+        if(selectedTool=="soil"){
+
+            if(cell.dataset.state!="pot") return;
+
+            if(miscItems[1].owned<=0) return;
+
+            cell.querySelector("img").src="sprites/potdirt.png";
+
+            cell.dataset.state="soil";
+
+            miscItems[1].owned--;
+
+            updateInventory();
+			saveGame();
+
+            if(miscItems[1].owned==0){
+
+                selectedTool=null;
+                cursorSprite.style.display="none";
+
+            }
+
+            return;
+        }
+		// ADD WATER
+if(selectedTool=="water"){
+
+    if(cell.dataset.state!="soil" && cell.dataset.state!="needsWater") return;
+
+    if(miscItems[2].owned<=0) return;
+
+    if(cell.dataset.state=="soil"){
+
+    cell.querySelector("img").src="sprites/potwater.png";
+
+    cell.dataset.state="water";
+
+}
+else{
+
+    let wateredSprite;
+
+    if(cell.dataset.plant=="daisy")
+        wateredSprite="sprites/potdaisy3.png";
+
+    else if(cell.dataset.plant=="tulip")
+        wateredSprite="sprites/tulip3.png";
+
+    else
+        wateredSprite="sprites/sunflower3.png";
+
+    cell.querySelector("img").src=wateredSprite;
+
+cell.dataset.state="stage2water";
+
+finishGrowth(cell);
+
+}
+
+miscItems[2].owned--;
+
+updateInventory();
+saveGame();
+
+if(miscItems[2].owned==0){
+
+    selectedTool=null;
+    cursorSprite.style.display="none";
+
+}
+
+return;
+
+    updateInventory();
+	saveGame();
+
+    if(miscItems[2].owned==0){
+
+        selectedTool=null;
+        cursorSprite.style.display="none";
+
+    }
+
+    return;
+}
+// PLANT SEEDS
+if(selectedTool=="daisy" || selectedTool=="tulip" || selectedTool=="sunflower"){
+
+    if(cell.dataset.state!="water") return;
+
+    let seedIndex;
+    let stage1Sprite;
+
+    if(selectedTool=="daisy"){
+
+        seedIndex=0;
+        stage1Sprite="sprites/potdaisy.png";
+
+    }
+    else if(selectedTool=="tulip"){
+
+        seedIndex=1;
+        stage1Sprite="sprites/tulip1.png";
+
+    }
+    else{
+
+        seedIndex=2;
+        stage1Sprite="sprites/sunflower1.png";
+
+    }
+
+    if(seeds[seedIndex].owned<=0) return;
+
+cell.querySelector("img").src = stage1Sprite;
+
+seeds[seedIndex].owned--;
+
+cell.dataset.plant = selectedTool;
+
+updateInventory();
+saveGame();
+
+if(betterWater){
+
+    cell.dataset.state = "stage2water";
+
+    if(selectedTool=="daisy")
+        cell.querySelector("img").src="sprites/potdaisy3.png";
+
+    else if(selectedTool=="tulip")
+        cell.querySelector("img").src="sprites/tulip3.png";
+
+    else
+        cell.querySelector("img").src="sprites/sunflower3.png";
+
+    finishGrowth(cell);
+
+}
+else{
+
+cell.dataset.state = "growing";
+
+saveGame();
+
+growPlant(cell);
+
+};
+
+    selectedTool=null;
+
+    cursorSprite.style.display="none";
+
+    return;
+}
+
+    };
+
+});
+function growPlant(cell){
+
+    const plant=cell.dataset.plant;
+
+    let stage2Sprite;
+    let readySprite;
+    let growTime;
+
+    if(plant=="daisy"){
+
+        stage2Sprite="sprites/potdaisy2.png";
+        readySprite="sprites/potdaisyfinal.png";
+        growTime = betterPots ? 5000 : 10000;
+
+    }
+
+    else if(plant=="tulip"){
+
+        stage2Sprite="sprites/tulip2.png";
+        readySprite="sprites/tulipfinal.png";
+        growTime = betterPots ? 10000 : 20000;
+
+    }
+
+    else{
+
+        stage2Sprite="sprites/sunflower2.png";
+        readySprite="sprites/sunflowerfinal.png";
+        growTime = betterPots ? 15000 : 30000;
+
+    }
+
+    setTimeout(function(){
+
+        if(cell.dataset.state!="growing") return;
+
+cell.querySelector("img").src = stage2Sprite;
+
+cell.dataset.state = "needsWater";
+
+saveGame();
+
+    },growTime);
+
+}
+function finishGrowth(cell){
+
+    let readySprite;
+    let growTime;
+
+    if(cell.dataset.plant=="daisy"){
+
+        readySprite="sprites/potdaisyfinal.png";
+        growTime = betterPots ? 5000 : 10000;
+
+    }
+
+    else if(cell.dataset.plant=="tulip"){
+
+        readySprite="sprites/tulipfinal.png";
+        growTime = betterPots ? 10000 : 20000;
+
+    }
+
+    else{
+
+        readySprite="sprites/sunflowerfinal.png";
+        growTime = betterPots ? 15000 : 30000;
+
+    }
+
+    setTimeout(function(){
+
+        if(cell.dataset.state!="stage2water") return;
+
+cell.querySelector("img").src = readySprite;
+
+cell.dataset.state = "ready";
+
+saveGame();
+
+    },growTime);
+
+}
+function completeOrder(){
+
+    if(currentOrder==null) return;
+
+    if(flowers[currentOrder.index].owned<currentOrder.amount){
+
+        alert("Not enough flowers!");
+
+        return;
+
+    }
+
+    flowers[currentOrder.index].owned-=currentOrder.amount;
+
+    money+=currentOrder.reward;
+
+    moneyDisplay.innerHTML="Money: $"+money;
+
+    document.getElementById("daisyFlowerInv").innerHTML =
+    "Daisies: "+flowers[0].owned;
+
+    document.getElementById("tulipFlowerInv").innerHTML =
+    "Tulips: "+flowers[1].owned;
+
+    document.getElementById("sunflowerFlowerInv").innerHTML =
+    "Sunflowers: "+flowers[2].owned;
+
+    currentOrder = null;
+
+renderOrders();
+
+startOrderTimer();
+
+saveGame();
+
+}
+renderOrders();
+function renderOrders(){
+
+    const list=document.getElementById("ordersList");
+
+    if(currentOrder==null){
+
+        list.innerHTML="<p>No orders available.</p>";
+        return;
+
+    }
+
+    list.innerHTML=`
+
+        <p><b>${currentOrder.flower}</b></p>
+
+        <p>Amount: ${currentOrder.amount}</p>
+
+        <p>Reward: $${currentOrder.reward}</p>
+
+        <button onclick="completeOrder()">
+            Deliver
+        </button>
+
+    `;
+
+}
+function renderUpgrades(){
+
+    const list=document.getElementById("upgradeList");
+
+    list.innerHTML="";
+
+    upgrades.forEach((upgrade,index)=>{
+
+        let owned=false;
+
+        if(index==0) owned=betterPots;
+        if(index==1) owned=betterSoil;
+        if(index==2) owned=betterWater;
+
+        list.innerHTML+=`
+
+        <div class="upgradeItem">
+
+            <div class="upgradeInfo">
+
+                <b>${upgrade.name}</b>
+
+                <p>${upgrade.desc}</p>
+
+                <p>$${upgrade.price}</p>
+
+            </div>
+
+            ${
+                owned
+                ?
+                "<button disabled>Owned</button>"
+                :
+                `<button onclick="buyUpgrade(${index})">Buy</button>`
+            }
+
+        </div>
+
+        `;
+
+    });
+
+}
+function buyUpgrade(index){
+
+    const upgrade=upgrades[index];
+
+    if(money<upgrade.price){
+
+        alert("Not enough money!");
+
+        return;
+
+    }
+
+    money-=upgrade.price;
+
+    moneyDisplay.innerHTML="Money: $"+money;
+
+    if(index==0){
+
+        betterPots=true;
+
+    }
+
+    if(index==1){
+
+        betterSoil=true;
+
+    }
+
+    if(index==2){
+
+        betterWater=true;
+
+    }
+
+    renderOrders();
+	renderUpgrades();
+	saveGame();
+
+}
+renderOrders();
+renderUpgrades();
+loadGame();
+</script>
+</html>
