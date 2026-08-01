@@ -96,6 +96,17 @@ Gardenopia
 </div>
 
 <img id="cursorSprite" src="sprites/pot.png">
+<img id="guide" src="sprites/defaultMicheal.png">
+
+<div id="guideBox">
+
+    <p id="guideText"></p>
+
+    <button id="guideNext">
+        Next ▶
+    </button>
+
+</div>
 </body>
 <style>
 #resetGame{
@@ -314,7 +325,7 @@ html, body{
 }
 
 body{
-    background-image: url("sprites/cloudsbg.jfif");
+    background-image: url("sprites/cloudsbg.JFIF");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -327,7 +338,7 @@ body{
     width:100%;
     height:90px;
 
-    background-image:url("sprites/wood.jfif");
+    background-image:url("sprites/wood.JFIF");
     background-size:cover;
     background-position:center;
 
@@ -487,7 +498,7 @@ body{
     width:900px;
     height:550px;
 
-    background-image:url("sprites/grass.jfif");
+    background-image:url("sprites/grass.JFIF");
     background-repeat:repeat;
     background-size:128px 128px;
 
@@ -662,15 +673,94 @@ body{
     margin:15px 0;
 
 }
+#guide{
+
+    position:absolute;
+
+    left:1300px;
+    top:300px;
+
+    width:480px;
+
+    image-rendering:pixelated;
+
+    z-index:500;
+
+}
+
+#guideBox{
+
+    position:absolute;
+
+    left:1450px;
+    top:200px;
+
+    width:420px;
+
+    background:white;
+
+    border:4px solid black;
+
+    border-radius:12px;
+
+    padding:15px;
+
+    display:none;
+
+    font-size:20px;
+
+    z-index:501;
+
+}
+#guideNext{
+
+    margin-top:15px;
+
+    float:right;
+
+    padding:8px 18px;
+
+    font-size:18px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#48b44d;
+
+    color:white;
+
+    cursor:pointer;
+
+}
+
+#guideNext:hover{
+
+    background:#3b993f;
+
+}
 </style>
 <script>
+let tutorialStage = 0;
+
+let tutorialWaiting = false;
+
+let dialogueLocked = false;
+
 function loadGame(){
 
-    const save = localStorage.getItem("gardenopiaSave");
+const save = localStorage.getItem("gardenopiaSave");
 
-    if(!save) return;
+if(!save){
+
+    tutorialStage = 1;
+
+    return;
+
+}
 
     const data = JSON.parse(save);
+	tutorialStage = data.tutorialStage ?? 1;
 
     money = data.money;
 
@@ -761,7 +851,7 @@ function saveGame(){
     }));
 
     const saveData = {
-
+		tutorialStage: tutorialStage,
         money: money,
 
         seeds: seeds,
@@ -1007,11 +1097,32 @@ const tulipPlant=document.getElementById("tulipPlant");
 const sunflowerPlant=document.getElementById("sunflowerPlant");
 
 let selectedTool=null;
+const guide=document.getElementById("guide");
+const guideBox=document.getElementById("guideBox");
+const guideText=document.getElementById("guideText");
+
+const idleFrames=[
+"sprites/defaultMicheal.png",
+"sprites/michealidle1.png",
+"sprites/michealidle2.png"
+];
+
+const talkFrames=[
+"sprites/defaultMicheal.png",
+"sprites/michealTalk1.png",
+"sprites/michealTalk1.png"
+];
+
+let currentFrames=idleFrames;
+let currentFrame=0;
 resetGame.onclick = function(){
 
     if(confirm("Are you sure you want to delete your save? This cannot be undone.")){
 
         localStorage.removeItem("gardenopiaSave");
+		tutorialStage = 1;
+guide.style.display = "block";
+guideBox.style.display = "block";
 
         location.reload();
 
@@ -1025,6 +1136,20 @@ button.onclick=function(){
     }
     else{
         shop.style.display="block";
+
+        if(tutorialStage==3){
+
+            tutorialStage=4;
+
+            startDialogue([
+				{text:"Here you will get all your seeds.",lock:false},
+				{text:"Since you're broke, buy a Daisy to get yourself started.",lock:true}
+
+
+            ]);
+
+        }
+
     }
 
 }
@@ -1035,9 +1160,27 @@ miscButton.onclick=function(){
     }
     else{
         miscShop.style.display="block";
+
+        if(tutorialStage===1){
+
+            tutorialStage=2;
+
+            startDialogue([
+				{text:"Great!",lock:false},
+				{text:"Here you will buy all the needed equipment to garden.",lock:false},
+				{text:"Go ahead and buy a soil bag, a pot and 2 waters for your first plant.",lock:true}
+                
+                
+            ]);
+			
+			
+
+        }
+
     }
 
 }
+
 ordersButton.onclick=function(){
 
     if(ordersShop.style.display=="block"){
@@ -1216,6 +1359,31 @@ function buySeed(index){
 
         saveGame();
 
+        if(tutorialStage==4 && index==0){
+
+            tutorialStage=5;
+
+            startDialogue([
+			{text:"Perfect!",lock:false},
+			{text:"Now that you have everything...",lock:false},
+			{text:"Place down your pot.",lock:true},
+                
+
+                
+
+                
+				
+				
+				
+				
+				
+				
+				
+
+            ]);
+
+        }
+
     }
 
 }
@@ -1232,8 +1400,33 @@ function buyMisc(index){
         moneyDisplay.innerHTML="Money: $"+money;
 
         renderMiscShop();
-		updateInventory();
-		saveGame();
+        updateInventory();
+        saveGame();
+
+        // Tutorial check
+        if(
+            tutorialStage==2 &&
+            miscItems[0].owned>=1 &&
+            miscItems[1].owned>=1 &&
+            miscItems[2].owned>=2
+        ){
+
+            tutorialStage=3;
+
+            startDialogue([
+			{text:"Excellent!",lock:false},
+			{text:"You've got everything you need.",lock:false},
+			{text:"Now open up the Seeds Shop.",lock:true}
+
+                
+
+                
+
+                
+
+            ]);
+
+        }
 
     }
 
@@ -1349,6 +1542,21 @@ cell.dataset.plant = "";
 cell.dataset.occupied = "false";
 
 saveGame();
+if(tutorialStage == 10){
+
+    tutorialStage = 11;
+	 saveGame();
+
+    startDialogue([
+        {text:"Excellent work!", lock:false},
+        {text:"You've completed your first harvest.", lock:false},
+        {text:"Keep growing flowers, complete orders, and upgrade your garden.", lock:false},
+        {text:"Good luck, gardener!", lock:false}
+    ], true);
+
+}
+
+return;
 
 return;
 
@@ -1374,6 +1582,15 @@ return;
 
             updateInventory();
 			saveGame();
+			if(tutorialStage == 5){
+
+    tutorialStage = 6;
+
+    startDialogue([
+        {text:"Great, now it needs soil.",lock:true},
+    ], true);
+
+}
 
             if(miscItems[0].owned==0){
 
@@ -1400,6 +1617,17 @@ return;
 
             updateInventory();
 			saveGame();
+			if(tutorialStage == 6){
+
+    tutorialStage = 7;
+
+    startDialogue([
+        {text:"Nice! The soil is in.", lock:false},
+        {text:"Plants can't grow without water.", lock:false},
+        {text:"Use your watering can on the pot.", lock:true}
+    ], true);
+
+}
 
             if(miscItems[1].owned==0){
 
@@ -1422,6 +1650,15 @@ if(selectedTool=="water"){
     cell.querySelector("img").src="sprites/potwater.png";
 
     cell.dataset.state="water";
+	if(tutorialStage == 7){
+
+    tutorialStage = 8;
+
+    startDialogue([
+		{text:"And you are ready to go, plant a daisy to get started",lock:true}
+    ], true);
+
+}
 
 }
 else{
@@ -1442,6 +1679,18 @@ else{
 cell.dataset.state="stage2water";
 
 finishGrowth(cell);
+if(tutorialStage == 9){
+
+    tutorialStage = 10;
+
+    startDialogue([
+        {text:"Great! Your plant has everything it needs now.", lock:false},
+        {text:"Once it's fully grown, harvest it.", lock:false},
+        {text:"Harvested flowers will attract customers looking to buy them.", lock:false},
+        {text:"Check the Orders tab to complete orders and earn money.", lock:true}
+    ], true);
+
+}
 
 }
 
@@ -1532,6 +1781,17 @@ cell.dataset.state = "growing";
 saveGame();
 
 growPlant(cell);
+if(tutorialStage == 8 && selectedTool == "daisy"){
+
+    tutorialStage = 9;
+
+    startDialogue([
+        {text:"Awesome!", lock:false},
+        {text:"Now just wait for your plant to grow.", lock:false},
+        {text:"When it looks thirsty again, water it one more time.", lock:true}
+    ], true);
+
+}
 
 };
 
@@ -1776,6 +2036,109 @@ function buyUpgrade(index){
 }
 renderOrders();
 renderUpgrades();
+setInterval(function(){
+
+    guide.src=currentFrames[currentFrame];
+
+    currentFrame++;
+
+    if(currentFrame>=currentFrames.length){
+
+        currentFrame=0;
+
+    }
+
+},333);
+const tutorialDialogue=[];
+
+let dialogueIndex=0;
+
+function startDialogue(dialogue, locked = false){
+
+    tutorialDialogue.length = 0;
+
+    dialogue.forEach(line => tutorialDialogue.push(line));
+
+    dialogueIndex = 0;
+
+    dialogueLocked = locked;
+
+    guideBox.style.display = "block";
+
+    currentFrames = talkFrames;
+
+    if(dialogueLocked){
+        guideNext.style.display = "none";
+    }
+    else{
+        guideNext.style.display = "block";
+    }
+
+    showDialogue();
+
+}
+function showDialogue(){
+
+    const line = tutorialDialogue[dialogueIndex];
+
+    if(typeof line === "string"){
+
+        guideText.innerHTML = line;
+
+        guideNext.style.display = "block";
+
+        dialogueLocked = false;
+
+    }
+    else{
+
+        guideText.innerHTML = line.text;
+
+        dialogueLocked = line.lock;
+
+        guideNext.style.display = line.lock ? "none" : "block";
+
+    }
+
+}
+
+document.getElementById("guideNext").onclick=function(){
+
+    if(dialogueLocked){
+        return;
+    }
+
+    dialogueIndex++;
+
+if(dialogueIndex>=tutorialDialogue.length){
+
+    guideBox.style.display="none";
+
+    currentFrames=idleFrames;
+
+    if(tutorialStage >= 11){
+        guideBox.style.display = "none";
+
+    }
+
+    return;
+
+}
+
+    showDialogue();
+
+};
 loadGame();
+
+if(tutorialStage == 1){
+
+    startDialogue([
+        {text:"Hi, my name is Michael.",lock:false},
+        {text:"Welcome to your new garden.",lock:false},
+        {text:"GARDENOPIA",lock:false},
+        {text:"First off, go ahead and open the Misc Shop.",lock:true}
+    ]);
+
+}
 </script>
 </html>
